@@ -1,31 +1,43 @@
 import 'package:flutter/material.dart';
-import 'package:geolocator/geolocator.dart';
+import 'package:live_weather/services/location.dart';
+
 
 class LoadingScreen extends StatefulWidget {
+  const LoadingScreen({super.key});
+
   @override
-  _LoadingScreenState createState() => _LoadingScreenState();
+  State<LoadingScreen> createState() => _LoadingScreenState();
 }
 
 class _LoadingScreenState extends State<LoadingScreen> {
-  void getLocation() async {
-    await Geolocator.checkPermission();
-    await Geolocator.requestPermission();
+  @override
+  void initState() {
+    super.initState();
+    getLocation();
+  }
 
-    Position position = await Geolocator.getCurrentPosition(
-        desiredAccuracy: LocationAccuracy.low);
-    print(position);
+  void getLocation() async {
+    Location location = Location();
+    await location.getCurrentLocation();
+    print(location.latitude);
+    print(location.longitude);
   }
 
   @override
   Widget build(BuildContext context) {
+    String myMargin = '10.0';
+    double? myMarginAsADouble;
+
+    try {
+      myMarginAsADouble = double.parse(myMargin);
+    } catch (e) {
+      print(e);
+    }
+
     return Scaffold(
-      body: Center(
-        child: ElevatedButton(
-          onPressed: () {
-            getLocation();
-          },
-          child: Text('Get Location'),
-        ),
+      body: Container(
+        margin: EdgeInsets.all(myMarginAsADouble ?? 30.0),
+        color: Colors.red,
       ),
     );
   }
