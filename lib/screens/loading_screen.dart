@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:live_weather/services/location.dart';
-
-
+import 'package:live_weather/screens/location_screen.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:live_weather/services/weather.dart';
 class LoadingScreen extends StatefulWidget {
   const LoadingScreen({super.key});
 
@@ -13,31 +13,28 @@ class _LoadingScreenState extends State<LoadingScreen> {
   @override
   void initState() {
     super.initState();
-    getLocation();
+    getLocationData();
   }
 
-  void getLocation() async {
-    Location location = Location();
-    await location.getCurrentLocation();
-    print(location.latitude);
-    print(location.longitude);
+  void getLocationData() async {
+    WeatherModel weatherModel = WeatherModel();
+    var weatherData = await weatherModel.getLocationWeather();
+
+    await Navigator.push(context, MaterialPageRoute(builder: (context) {
+      return LocationScreen(
+        locationWeather: weatherData,
+      );
+    }));
   }
 
   @override
   Widget build(BuildContext context) {
-    String myMargin = '10.0';
-    double? myMarginAsADouble;
-
-    try {
-      myMarginAsADouble = double.parse(myMargin);
-    } catch (e) {
-      print(e);
-    }
-
-    return Scaffold(
-      body: Container(
-        margin: EdgeInsets.all(myMarginAsADouble ?? 30.0),
-        color: Colors.red,
+    return const Scaffold(
+      body: Center(
+        child: SpinKitSquareCircle(
+          color: Colors.white,
+          size: 100.0,
+        ),
       ),
     );
   }
